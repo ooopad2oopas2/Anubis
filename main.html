@@ -304,3 +304,105 @@
                     </div>
                   </div>
                   <div class="form-field">
+                    <label class="form-label" for="institution-notes"><span>Desk notes</span><small>Internal only</small></label>
+                    <textarea id="institution-notes" name="notes" class="input" rows="2" placeholder="Optional: capture mandate, funding sensitivity, or constraints."></textarea>
+                  </div>
+                  <div class="button-row">
+                    <button type="button" class="btn secondary" id="institution-reset"><span class="icon">↺</span><span>Reset</span></button>
+                    <button type="submit" class="btn"><span class="icon">➕</span><span>Create institution</span></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="tab-section" aria-label="Institution list">
+              <div class="sub-panel-title"><span>Tracked institutions</span><span class="inline-hint">Click a controller to focus snapshots, chart, and aggregates.</span></div>
+              <div class="list-panel">
+                <div class="list-header"><span><strong id="institution-list-count">0</strong> controllers</span><span class="inline-hint" id="institution-selection-label">None selected</span></div>
+                <div class="list-body" id="institution-list">
+                  <div class="placeholder-message">No institutions from Etez yet. When the API at <strong>GET /institutions</strong> responds, controllers will appear here. You can also seed the list with the form on the left.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tab-snapshots" class="tab-content" role="tabpanel" aria-labelledby="tab-snapshots">
+            <div class="tab-section" aria-label="Add snapshot">
+              <div class="sub-panel-title"><span>Add snapshot</span><span class="inline-hint" id="snapshot-institution-label">Select an institution to attach new flow.</span></div>
+              <p class="sub-panel-description">Snapshots describe a single directional impulse from the selected institution: net flow in basis points, notional size, and sentiment over a chosen horizon. Use labels to anchor the narrative or catalyst.</p>
+              <div class="sub-panel">
+                <form id="snapshot-form">
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="form-label" for="snapshot-flow"><span>Net flow (bps)</span><small>Positive = in, negative = out</small></label>
+                      <input id="snapshot-flow" class="input" name="netFlowBps" type="number" step="0.1" placeholder="e.g. +12.5" required />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="snapshot-notional"><span>Notional</span><small>Desk units</small></label>
+                      <input id="snapshot-notional" class="input" name="notional" type="number" step="0.01" placeholder="e.g. 25.0" required />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="form-label" for="snapshot-sentiment"><span>Sentiment</span><small>Directional</small></label>
+                      <select id="snapshot-sentiment" name="sentiment" class="input" required>
+                        <option value="">Select sentiment</option>
+                        <option value="bullish">Bullish / constructive</option>
+                        <option value="neutral">Neutral / hedging</option>
+                        <option value="bearish">Bearish / de-risking</option>
+                      </select>
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="snapshot-horizon"><span>Horizon</span><small>Days or desk unit</small></label>
+                      <input id="snapshot-horizon" class="input" name="horizon" autocomplete="off" placeholder="e.g. 1d, 5d, 1m, tactical" />
+                    </div>
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label" for="snapshot-label"><span>Label</span><small>Optional narrative or trigger</small></label>
+                    <input id="snapshot-label" class="input" name="label" autocomplete="off" placeholder="e.g. CPI beat, ETF flows, funding squeeze, desk rotation" />
+                  </div>
+                  <div class="form-field">
+                    <label class="form-label" for="snapshot-notes"><span>Desk notes</span><small>Optional</small></label>
+                    <textarea id="snapshot-notes" name="notes" class="input" rows="2" placeholder="Optional: add color around trader intent, hedge vs. expression, or idiosyncratic details."></textarea>
+                  </div>
+                  <div class="button-row">
+                    <button type="button" class="btn secondary" id="snapshot-reset"><span class="icon">↺</span><span>Reset</span></button>
+                    <button type="submit" class="btn" id="snapshot-submit"><span class="icon">📥</span><span>Record snapshot</span></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="tab-section" aria-label="Snapshot history">
+              <div class="sub-panel-title"><span>Snapshot history</span><span class="inline-hint">Latest flow from the selected controller appears at the top.</span></div>
+              <div class="snapshot-list">
+                <div class="list-header"><span id="snapshot-list-label">No controller selected</span><span class="inline-hint" id="snapshot-count-label">0 datapoints</span></div>
+                <div class="snapshot-items" id="snapshot-list">
+                  <div class="placeholder-message">Select a controller from the <strong>Institutions</strong> tab to view its flow history. When <strong>GET /institutions/:id/series</strong> responds, datapoints will show here.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tab-chart" class="tab-content" role="tabpanel" aria-labelledby="tab-chart">
+            <div class="tab-section" aria-label="Trend chart">
+              <div class="chart-panel">
+                <div class="chart-header">
+                  <div class="chart-header-title"><span>Flow / sentiment trend</span><span id="chart-institution-label">No controller selected</span></div>
+                  <div class="chart-legend">
+                    <div class="chart-legend-item"><span class="legend-dot flow"></span><span>Net flow (bps)</span></div>
+                    <div class="chart-legend-item"><span class="legend-dot sentiment"></span><span>Sentiment score</span></div>
+                  </div>
+                </div>
+                <div class="chart-canvas-wrap"><div class="chart-grid-overlay" aria-hidden="true"></div><canvas id="anubis-chart" aria-label="Net flow and sentiment trend" role="img"></canvas></div>
+                <div class="inline-hint" id="chart-hint">Anubis draws a simple overlay: net flow in basis points (left axis) and sentiment in arbitrary units (right axis). Points are ordered by snapshot time; there is no interpolation with external feeds.</div>
+              </div>
+            </div>
+            <div class="tab-section" aria-label="Aggregates and window">
+              <div class="sub-panel">
+                <div class="sub-panel-title"><span>Aggregates for selected controller</span><span class="inline-hint">Derived from <strong>GET /institutions/:id/aggregates</strong>; units are defined by your Etez configuration.</span></div>
+                <div class="aggregates-grid" id="aggregates-grid">
+                  <div class="aggregate-card"><div class="aggregate-label">Average net flow</div><div class="aggregate-value" id="agg-avg-flow">0.0 bps</div><div class="aggregate-sub">Across all snapshots</div></div>
+                  <div class="aggregate-card"><div class="aggregate-label">Total notional</div><div class="aggregate-value" id="agg-total-notional">0.0</div><div class="aggregate-sub">Cumulative desk units</div></div>
+                  <div class="aggregate-card"><div class="aggregate-label">Sentiment skew</div><div class="aggregate-value" id="agg-sentiment-skew">—</div><div class="aggregate-sub">Bullish vs bearish</div></div>
+                  <div class="aggregate-card"><div class="aggregate-label">Snapshot count</div><div class="aggregate-value" id="agg-count">0</div><div class="aggregate-sub">Total datapoints</div></div>
+                  <div class="aggregate-card"><div class="aggregate-label">Last label</div><div class="aggregate-value" id="agg-last-label">—</div><div class="aggregate-sub">Most recent narrative</div></div>
+                  <div class="aggregate-card"><div class="aggregate-label">Horizon mix</div><div class="aggregate-value" id="agg-horizon">—</div><div class="aggregate-sub">Desk-defined units</div></div>
+                </div>
+              </div>
