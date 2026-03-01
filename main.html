@@ -202,3 +202,105 @@
   <div class="page">
     <header>
       <div class="header-inner">
+        <div class="brand">
+          <div class="brand-mark"><div class="brand-mark-icon">A</div></div>
+          <div class="brand-text">
+            <div class="brand-title"><span>Anubis</span><span>Institutional Flow Sentinel</span></div>
+            <div class="brand-tagline">Observability interface for <strong>Etez / Elona</strong> – track institutional risk, narrative shifts, and directional flow.</div>
+          </div>
+        </div>
+        <div class="header-meta">
+          <div class="header-tag"><span class="header-tag-dot"></span>LIVE LINKED TO ETEZ</div>
+          <div class="header-time" id="header-time">Window: <span>loading…</span></div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="shell">
+        <section class="panel" aria-label="Anubis overview">
+          <div class="message-area">
+            <div class="message-copy">
+              <div class="message-title" id="message-title">Awaiting data from Etez at <span style="color:var(--accent);">http://localhost:8097</span>.</div>
+              <p class="message-body" id="message-body">Use the <strong>Institutions</strong> pane to register controllers, then capture directional snapshots as the flow evolves. Anubis will render a live trendline of net flow and sentiment, plus cross-sectional aggregates for the current monitoring window.</p>
+              <div class="message-meta">
+                <div class="message-indicator" id="connection-indicator">
+                  <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><circle cx="6" cy="6" r="5" fill="none" stroke="rgba(240,181,90,0.5)" stroke-width="1.1" /><circle cx="6" cy="6" r="3" fill="rgba(240,181,90,0.45)" /></svg>
+                  <span>Checking Etez endpoint…</span>
+                </div>
+              </div>
+              <div class="message-pill-row">
+                <div class="message-pill">Controller-level telemetry only</div>
+                <div class="message-pill">No on-chain calls from Anubis</div>
+                <div class="message-pill">Tiers + tags are free-form</div>
+              </div>
+            </div>
+            <div class="message-health" aria-label="Window health">
+              <div class="message-health-label"><span>Window Flow Health</span><span id="health-score-label">Neutral</span></div>
+              <div class="message-health-bar" aria-hidden="true"><div class="message-health-bar-fill" id="health-bar-fill"></div></div>
+              <div class="message-health-footer"><span id="health-flow-label">Net: 0.0 bps</span><span id="health-sentiment-label">Sentiment: —</span></div>
+            </div>
+          </div>
+          <div class="stat-row" aria-label="Global statistics">
+            <div class="stat-card">
+              <div class="stat-label"><span></span>Controllers</div>
+              <div class="stat-value-row">
+                <div><div class="stat-value" id="stat-institutions">0</div><div class="stat-unit">tracked institutions</div></div>
+                <div class="stat-delta" id="stat-institutions-delta">+0 / 24h</div>
+              </div>
+              <div class="sub-stat"><span>Regions: <span id="stat-region-count">0</span></span><span>Risk tiers: <span id="stat-risk-count">0</span></span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label"><span></span>Snapshots</div>
+              <div class="stat-value-row">
+                <div><div class="stat-value" id="stat-snapshots">0</div><div class="stat-unit">historical datapoints</div></div>
+                <div class="stat-delta" id="stat-snapshots-delta">+0 / session</div>
+              </div>
+              <div class="sub-stat"><span>Latest label: <span id="stat-latest-label">—</span></span><span>Median horizon: <span id="stat-median-horizon">—</span></span></div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label"><span></span>Window flow</div>
+              <div class="stat-value-row">
+                <div><div class="stat-value" id="stat-window-flow">0.0</div><div class="stat-unit">bps net</div></div>
+                <div class="stat-delta negative" id="stat-window-sentiment">sentiment: —</div>
+              </div>
+              <div class="sub-stat"><span>Notional: <span id="stat-window-notional">—</span></span><span>Updated: <span id="stat-window-updated">never</span></span></div>
+            </div>
+          </div>
+          <div class="tab-strip" role="tablist" aria-label="Anubis sections">
+            <button class="tab active" data-tab="institutions" role="tab" aria-selected="true" aria-controls="tab-institutions"><span class="icon">🏛️</span><span>Institutions</span></button>
+            <button class="tab" data-tab="snapshots" role="tab" aria-selected="false" aria-controls="tab-snapshots"><span class="icon">📈</span><span>Snapshots</span></button>
+            <button class="tab" data-tab="chart" role="tab" aria-selected="false" aria-controls="tab-chart"><span class="icon">📊</span><span>Chart</span></button>
+            <button class="tab" data-tab="faq" role="tab" aria-selected="false" aria-controls="tab-faq"><span class="icon">❓</span><span>FAQ</span></button>
+          </div>
+          <div id="tab-institutions" class="tab-content active" role="tabpanel" aria-labelledby="tab-institutions">
+            <div class="tab-section" aria-label="Create institution">
+              <div class="sub-panel-title"><span>Create institution</span><span class="inline-hint">Controllers feed into Etez / Elona – no wallet calls originate here.</span></div>
+              <p class="sub-panel-description">Register an institution, assign its risk tier and primary tag, and Anubis will sync it into Etez. All identifiers are opaque to downstream consumers – use the labels that make sense to your desk.</p>
+              <div class="sub-panel">
+                <form id="institution-form">
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="form-label" for="institution-controller"><span>Controller name</span><small>Required</small></label>
+                      <input id="institution-controller" class="input" name="controller" autocomplete="off" placeholder="e.g. Northbridge Macro, Athene Funds, Pylon AM" required />
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="institution-region"><span>Region</span><small>Free-form</small></label>
+                      <input id="institution-region" class="input" name="region" autocomplete="off" placeholder="e.g. US, EU, APAC, Global" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-field">
+                      <label class="form-label" for="institution-risk"><span>Risk tier</span><small>Desk convention</small></label>
+                      <select id="institution-risk" name="riskTier" class="input">
+                        <option value="">Select tier</option>
+                        <option value="low">Low – anchor / neutral</option>
+                        <option value="medium">Medium – directional</option>
+                        <option value="high">High – tactical / fast</option>
+                      </select>
+                    </div>
+                    <div class="form-field">
+                      <label class="form-label" for="institution-tag"><span>Primary tag</span><small>Optional</small></label>
+                      <input id="institution-tag" class="input" name="primaryTag" autocomplete="off" placeholder="e.g. L/S Equity, RV, Crypto, Credit" />
+                    </div>
+                  </div>
+                  <div class="form-field">
