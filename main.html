@@ -406,3 +406,105 @@
                   <div class="aggregate-card"><div class="aggregate-label">Horizon mix</div><div class="aggregate-value" id="agg-horizon">—</div><div class="aggregate-sub">Desk-defined units</div></div>
                 </div>
               </div>
+              <div class="activity-panel" aria-label="Activity log">
+                <div class="activity-header"><span>Activity log</span><div class="activity-filters"><div class="activity-chip"><span class="dot"></span>Session only – Anubis does not store history.</div></div></div>
+                <div class="activity-log" id="activity-log">
+                  <div class="activity-item">
+                    <div class="activity-label">BOOT</div>
+                    <div class="activity-body">Anubis initialized. Waiting for Etez at <code style="font-size:0.78rem;">http://localhost:8097</code>.</div>
+                    <div class="activity-meta"><span class="context">System</span><span class="time">—</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tab-faq" class="tab-content" role="tabpanel" aria-labelledby="tab-faq">
+            <div class="tab-section" aria-label="FAQ">
+              <div class="faq-panel">
+                <div class="sub-panel-title"><span>FAQ: How Anubis fits with Etez / Elona</span><span class="inline-hint">Interface only – no private keys, no signing, no blockchain calls.</span></div>
+                <div class="faq-list" id="faq-list">
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false"><span class="label"><span style="color:var(--accent-strong);font-size:.86rem;">01</span><span>What is Anubis in this stack?</span></span><span class="icon">›</span></button>
+                    <div class="faq-answer">
+                      <p>Anubis is the human-facing lens on top of <strong>Etez / Elona</strong>. It retrieves institution definitions and time series from the Etez API, renders a minimal chart and aggregates, and lets you insert new institutions and snapshots.</p>
+                      <p>All persistence, invariants, and any smart-contract plumbing live beneath the surface in your Etez / Elona stack. Anubis never touches wallets, signing, or on-chain connectivity.</p>
+                    </div>
+                  </div>
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false"><span class="label"><span style="color:var(--accent-strong);font-size:.86rem;">02</span><span>Which endpoints does this UI call?</span></span><span class="icon">›</span></button>
+                    <div class="faq-answer">
+                      <p>Anubis talks to a single base URL, configured as <code style="font-size:0.8rem;">http://localhost:8097</code> by default. From there, it expects a minimal, JSON-based API:</p>
+                      <ul>
+                        <li><code style="font-size:0.8rem;">GET /institutions</code> → list all controllers</li>
+                        <li><code style="font-size:0.8rem;">GET /institutions/:id/series</code> → time series for a controller</li>
+                        <li><code style="font-size:0.8rem;">GET /institutions/:id/aggregates</code> → derived metrics for a controller</li>
+                        <li><code style="font-size:0.8rem;">POST /institutions</code> → create a new controller</li>
+                        <li><code style="font-size:0.8rem;">POST /institutions/:id/snapshots</code> → append a new flow snapshot</li>
+                      </ul>
+                      <p>If your Etez instance uses a different path layout, you can either adapt the UI or layer a compatibility shim in front of the API.</p>
+                    </div>
+                  </div>
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false"><span class="label"><span style="color:var(--accent-strong);font-size:.86rem;">03</span><span>Does Anubis ever touch the blockchain?</span></span><span class="icon">›</span></button>
+                    <div class="faq-answer">
+                      <p>No. This page does <strong>not</strong> import <code style="font-size:0.8rem;">ethers.js</code>, <code style="font-size:0.8rem;">web3.js</code>, or any other blockchain library. It never sends JSON-RPC calls and never accesses wallets, private keys, or signing providers.</p>
+                      <p>All blockchain-facing logic belongs in Etez / Elona and the services around them. Anubis is intentionally an HTTP-only consumer.</p>
+                    </div>
+                  </div>
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false"><span class="label"><span style="color:var(--accent-strong);font-size:.86rem;">04</span><span>How opinionated are the tiers and tags?</span></span><span class="icon">›</span></button>
+                    <div class="faq-answer">
+                      <p>Not very. Fields like <em>risk tier</em>, <em>primary tag</em>, and <em>horizon</em> are free-form suggestions. You can wire them into stricter enums or risk buckets in your Etez schema if you prefer.</p>
+                      <p>The UI will simply echo whatever values the API returns in its institution and snapshot payloads, so you retain full control over taxonomy.</p>
+                    </div>
+                  </div>
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false"><span class="label"><span style="color:var(--accent-strong);font-size:.86rem;">05</span><span>What happens if the API is offline?</span></span><span class="icon">›</span></button>
+                    <div class="faq-answer">
+                      <p>If <code style="font-size:0.8rem;">GET /institutions</code> or other endpoints fail, Anubis will surface a non-blocking warning in the message bar and log the error to the activity feed.</p>
+                      <p>You can still interact with the page, but lists and metrics will remain in a placeholder state until the API responds successfully.</p>
+                    </div>
+                  </div>
+                  <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false"><span class="label"><span style="color:var(--accent-strong);font-size:.86rem;">06</span><span>How should I extend this interface?</span></span><span class="icon">›</span></button>
+                    <div class="faq-answer">
+                      <p>A typical next step is to enrich the chart with additional overlays (e.g. volatility bands, relative performance, or cross-controller aggregates) or to add filters in the institutions list for region, tier, and tag.</p>
+                      <p>The script section is intentionally straightforward vanilla JavaScript, so you can gradually upgrade it into a framework-based UI or wire it into your existing front-end.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-section" aria-label="Operational notes">
+              <div class="sub-panel">
+                <div class="sub-panel-title"><span>Operational notes</span><span class="inline-hint">Intended for a single operator console or desk view.</span></div>
+                <p class="sub-panel-description">This page keeps <strong>no durable state</strong> beyond what Etez / Elona provides. If you reload, Anubis re-queries your API and rebuilds the view. If you need multi-operator audit trails or permissions, build them into your backend.</p>
+                <p class="sub-panel-description">The activity log is <em>session-scoped only</em> by design. It helps you see how the current operator interacted with the system but is not a substitute for a real audit ledger.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="content-grid" aria-label="Secondary Anubis layout">
+          <div class="primary-column">
+            <section class="panel" aria-label="Institution quick view">
+              <div class="panel-header">
+                <div>
+                  <div class="panel-title"><span>Current selection</span><span class="chip"><span class="chip-dot"></span><span id="selected-institution-chip">None selected</span></span></div>
+                  <div class="panel-subtitle">Quick readout of the focused controller, including last label, snapshot count, and decoded risk tier.</div>
+                </div>
+              </div>
+              <div class="institution-layout" id="selection-summary">
+                <div><div class="placeholder-message">Use the <strong>Institutions</strong> tab above to pick a controller. Once selected, the summary here will mirror its latest metadata and snapshot.</div></div>
+                <div>
+                  <div class="aggregates-grid">
+                    <div class="aggregate-card"><div class="aggregate-label">Latest flow</div><div class="aggregate-value" id="quick-latest-flow">—</div><div class="aggregate-sub">Net bps</div></div>
+                    <div class="aggregate-card"><div class="aggregate-label">Latest sentiment</div><div class="aggregate-value" id="quick-latest-sentiment">—</div><div class="aggregate-sub">Desk classification</div></div>
+                    <div class="aggregate-card"><div class="aggregate-label">Snapshot count</div><div class="aggregate-value" id="quick-snapshot-count">0</div><div class="aggregate-sub">This controller</div></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="secondary-column">
+            <section class="panel" aria-label="Session diagnostics">
+              <div class="panel-header">
